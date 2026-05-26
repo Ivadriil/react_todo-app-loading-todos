@@ -1,8 +1,8 @@
 export enum TypeErroros {
   Normal = '',
-  NotFindTodosErrors = 'NotFindTodosErrors',
-  AddTodoErrorSpace = 'addTodoErrorSpace',
-  AddTodoError = 'addTodoError',
-  ErorDelet = 'erorDelet',
-  ErorUppdate = 'ErorUppdate',
+  NotFindTodosErrors = 'Unable to load todos',
+  AddTodoErrorSpace = 'Title should not be empty',
+  AddTodoError = 'Unable to add a todo',
+  ErorDelet = 'Unable to delete a todo',
+  ErorUppdate = 'Unable to update a todo',
 }

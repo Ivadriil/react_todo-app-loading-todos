@@ -19,27 +19,27 @@ export const App: React.FC = () => {
   const [visibleTodos, setVisibleTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
   const activeTodosCount = todos.filter(todo => !todo.completed).length;
-  const [erroAll, setErroAll] = useState<TypeErroros>(TypeErroros.Normal);
+  const [error, setError] = useState<TypeErroros>(TypeErroros.Normal);
   const [category, setCategory] = useState<Category>(Category.All);
 
   useEffect(() => {
-    if (erroAll === TypeErroros.Normal) {
+    if (error === TypeErroros.Normal) {
       return;
     }
 
     const timer = setTimeout(() => {
-      setErroAll(TypeErroros.Normal);
+      setError(TypeErroros.Normal);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [erroAll]);
+  }, [error]);
   useEffect(() => {
     getTodos()
       .then(data => {
         setTodos(data);
       })
       .catch(() => {
-        setErroAll(TypeErroros.NotFindTodosErrors);
+        setError(TypeErroros.NotFindTodosErrors);
       });
   }, []);
 
@@ -60,10 +60,10 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         if (title === '') {
-          setErroAll(TypeErroros.AddTodoErrorSpace);
+          setError(TypeErroros.AddTodoErrorSpace);
         }
 
-        setErroAll(TypeErroros.AddTodoError);
+        setError(TypeErroros.AddTodoError);
       })
       .finally(() => setLoadingTodoId(null));
   }
@@ -74,7 +74,7 @@ export const App: React.FC = () => {
     const trimmedTitle = title.trim();
 
     if (!trimmedTitle) {
-      setErroAll(TypeErroros.AddTodoErrorSpace);
+      setError(TypeErroros.AddTodoErrorSpace);
 
       return;
     }
@@ -108,7 +108,7 @@ export const App: React.FC = () => {
         );
       })
       .catch(() => {
-        setErroAll(TypeErroros.ErorUppdate);
+        setError(TypeErroros.ErorUppdate);
       })
       .finally(() => setLoadingTodoId(null));
   };
@@ -133,7 +133,7 @@ export const App: React.FC = () => {
           currentTodos.filter(todo => todo.id !== todoId),
         );
       })
-      .catch(() => setErroAll(TypeErroros.ErorDelet))
+      .catch(() => setError(TypeErroros.ErorDelet))
       .finally(() => setLoadingTodoId(null));
   }
 
@@ -190,7 +190,7 @@ export const App: React.FC = () => {
         setEditTitle('');
       })
       .catch(() => {
-        setErroAll(TypeErroros.ErorUppdate);
+        setError(TypeErroros.ErorUppdate);
       })
       .finally(() => setLoadingTodoId(null));
   };
@@ -233,7 +233,7 @@ export const App: React.FC = () => {
         />
       </div>
 
-      <Errors erroAll={erroAll} setErroAll={setErroAll} />
+      <Errors error={error} setError={setError} />
     </div>
   );
 };
