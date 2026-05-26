@@ -10,28 +10,25 @@ import { Header } from './componets/Header';
 import { Footer } from './componets/Footer';
 import { Errors } from './componets/Errors';
 import { Category } from './types/Category';
+import { TypeErroros } from './types/Errors';
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [erorDelet, setErorDelet] = useState(false);
-  const [todosError, setTodosError] = useState(false);
-  const [addTodoError, setAddTodoError] = useState<boolean | string>(false);
-  const [ErorUppdate, setErorUppdate] = useState(false);
   const [loadingTodoId, setLoadingTodoId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
-  const [erroAll, setErroAll] = useState(false);
   const [visibleTodos, setVisibleTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
   const activeTodosCount = todos.filter(todo => !todo.completed).length;
+  const [erroAll, setErroAll] = useState<TypeErroros>(TypeErroros.Normal);
   const [category, setCategory] = useState<Category>(Category.All);
 
   useEffect(() => {
-    if (!erroAll) {
+    if (erroAll === TypeErroros.Normal) {
       return;
     }
 
     const timer = setTimeout(() => {
-      setErroAll(false);
+      setErroAll(TypeErroros.Normal);
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -42,8 +39,7 @@ export const App: React.FC = () => {
         setTodos(data);
       })
       .catch(() => {
-        setTodosError(true);
-        setErroAll(true);
+        setErroAll(TypeErroros.NotFindTodosErrors);
       });
   }, []);
 
@@ -64,12 +60,10 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         if (title === '') {
-          setAddTodoError('space');
-          setErroAll(true);
+          setErroAll(TypeErroros.AddTodoErrorSpace);
         }
 
-        setErroAll(true);
-        setAddTodoError(true);
+        setErroAll(TypeErroros.AddTodoError);
       })
       .finally(() => setLoadingTodoId(null));
   }
@@ -80,8 +74,7 @@ export const App: React.FC = () => {
     const trimmedTitle = title.trim();
 
     if (!trimmedTitle) {
-      setAddTodoError('space');
-      setErroAll(true);
+      setErroAll(TypeErroros.AddTodoErrorSpace);
 
       return;
     }
@@ -115,8 +108,7 @@ export const App: React.FC = () => {
         );
       })
       .catch(() => {
-        setErroAll(true);
-        setErorUppdate(true);
+        setErroAll(TypeErroros.ErorUppdate);
       })
       .finally(() => setLoadingTodoId(null));
   };
@@ -141,7 +133,7 @@ export const App: React.FC = () => {
           currentTodos.filter(todo => todo.id !== todoId),
         );
       })
-      .catch(() => setErorDelet(true))
+      .catch(() => setErroAll(TypeErroros.ErorDelet))
       .finally(() => setLoadingTodoId(null));
   }
 
@@ -186,7 +178,7 @@ export const App: React.FC = () => {
       .updateTodo({
         id: todoId,
         title: trimmed,
-        completed: false, // або взяти з todo
+        completed: false,
         userId: USER_ID,
       })
       .then(updated => {
@@ -198,8 +190,7 @@ export const App: React.FC = () => {
         setEditTitle('');
       })
       .catch(() => {
-        setErorUppdate(true);
-        setErroAll(true);
+        setErroAll(TypeErroros.ErorUppdate);
       })
       .finally(() => setLoadingTodoId(null));
   };
@@ -240,16 +231,9 @@ export const App: React.FC = () => {
           setCategory={setCategory}
           removeElementAllCompleted={removeElementAllCompleted}
         />
-
-        <Errors
-          erroAll={erroAll}
-          setErroAll={setErroAll}
-          todosError={todosError}
-          addTodoError={addTodoError}
-          erorDelet={erorDelet}
-          ErorUppdate={ErorUppdate}
-        />
       </div>
+
+      <Errors erroAll={erroAll} setErroAll={setErroAll} />
     </div>
   );
 };

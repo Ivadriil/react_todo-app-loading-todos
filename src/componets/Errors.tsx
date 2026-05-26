@@ -1,56 +1,46 @@
 import React from 'react';
 import cn from 'classnames';
+import { TypeErroros } from '../types/Errors';
 type Props = {
-  erroAll: boolean;
-  setErroAll: React.Dispatch<React.SetStateAction<boolean>>;
-  todosError: boolean;
-  addTodoError: boolean | string;
-  erorDelet: boolean;
-  ErorUppdate: boolean;
+  erroAll: TypeErroros;
+  setErroAll: React.Dispatch<React.SetStateAction<TypeErroros>>;
 };
 
-export const Errors: React.FC<Props> = ({
-  erroAll,
-  setErroAll,
-  todosError,
-  addTodoError,
-  erorDelet,
-  ErorUppdate,
-}) => {
+export const Errors: React.FC<Props> = ({ erroAll, setErroAll }) => {
   return (
     <div
       data-cy="ErrorNotification"
       className={cn('notification is-danger is-light has-text-weight-normal', {
-        hidden: !erroAll,
+        hidden: erroAll === TypeErroros.Normal,
       })}
     >
       <button
         data-cy="HideErrorButton"
         type="button"
         className="delete"
-        onClick={() => setErroAll(false)}
+        onClick={() => setErroAll(TypeErroros.Normal)}
       />
       {/* show only one message at a time */}
-      {todosError && <>Unable to load todos</>}
-      {addTodoError === 'space' && (
+      {erroAll === TypeErroros.NotFindTodosErrors && <>Unable to load todos</>}
+      {erroAll === TypeErroros.AddTodoErrorSpace && (
         <>
           <br />
           Title should not be empty
         </>
       )}
-      {addTodoError && (
+      {erroAll === TypeErroros.AddTodoError && (
         <>
           <br />
           Unable to add a todo
         </>
       )}
-      {erorDelet && (
+      {erroAll === TypeErroros.ErorDelet && (
         <>
           <br />
           Unable to delete a todo
         </>
       )}
-      {ErorUppdate && (
+      {erroAll === TypeErroros.ErorUppdate && (
         <>
           <br />
           Unable to update a todo
